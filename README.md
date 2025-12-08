@@ -4,6 +4,7 @@
 - Affan Leebe
 - Om Patel
 
+This project was a collaborative effort with each member contributing their own unique segments to the final product. Affan took care of overarching project guidance and final documentation (project overview, narrative for data profiling, data quality assessment, interpretation of results). Affan ran the analysis pipeline from start to finish to create the visualizations and guaranteed that everything was reproducible through the final code. Om handled more of the technical data source preparations like sourcing the original data files needed, organizing them, creating the data cleaning script implemented to wrangle both the EV and AFDC datasets, and creating the logic for merging both at the city level. Finally, both members corroborated on final results to ensure that the merged dataset was accurate and the organization of the repo, documentation, and Milestone 4 requirements were all met. This division of responsibilities allowed for an effective use of t
 ---
 
 ## Summary (500–1000 words)
@@ -126,29 +127,31 @@ We document this change explicitly in the Status Report and again here to mainta
 
 ---
 
-## Data Quality (500–1000 words)
+Data Quality (500-1000 words)
 
-We evaluated data quality along several dimensions: completeness, consistency, validity, and fitness for our intended analysis.
+We assessed the quality of data based on various dimensions: completeness, consistency, validity and fitness for our purposes.
 
-### Completeness
+Completeness
 
-- **EV Registrations (DOL):**  
-  After filtering to `State == "WA"`, there are **239,232 EV records**. The fields we rely on most—`City` and `State`—are fully populated in the data you supplied (no missing values in `City` for Washington rows). Other attributes like `Electric Range` or `CAFV Eligibility` contain occasional missing or “Unknown” values, but these are not central to our integration and analysis.
+EV Registrations (DOL):
+The filtered data contains 239,232 EV records post-scrub (only State == "WA" stays). The fields we use most - City and State - are populated for all rows in the data you provided (no missing values in City for Washington rows); fields like Electric Range or CAFV Eligibility may be missing or "Unknown" but are not fields we're integrating an analyzing at this time.
 
-- **AFDC Stations:**  
-  After filtering to Washington (`State == "WA"`), EV fuel type (`Fuel Type Code == "ELEC"`), and existing stations (`Status Code == "E"`), we have **2,907 rows**. In this subset, `City` is also fully populated (no missing values), which is critical for city-level integration. Some fields such as `EV Level1 EVSE Num`, `EV Level2 EVSE Num`, or `EV DC Fast Count` are missing for some stations, reflecting incomplete reporting on the equipment counts. Because our primary unit for integration is “station location,” and not the exact count of plugs per site, we treat each row as one station and do not attempt to impute missing EVSE counts.
+AFDC Stations:
+Post-scrub, we have 2,907 rows (only State == "WA", Fuel Type Code == "ELEC" and Status Code == "E" are kept). In this filtered version, City is also populated for all stations (no missing values), which is critical for joining on the city level. However, fields like EV Level1 EVSE Num, EV Level2 EVSE Num or EV DC Fast Count are null for some stations; this represents partial reporting about how many EVSEs are available. Therefore, since the integrative unit of analysis is "station location" and not what's physically present at each site, these count misses will be treated as null, but no imputation will happen to create the same values for ease of data integration.
 
-### Consistency and Standardization
+Consistency and Standardization
 
-There are natural variations in city spelling and formatting (e.g., “Seattle”, “SEATTLE”, trailing spaces). To address this, we:
+There will always be variation in spelling of words between datasets. For example, cities may not be spelled in uppercase or there might be a blank space afterwards (“Seattle”, “SEATTLE” with a trailing space). To circumvent any issues, we:
 
-- Create `City_clean` in both datasets by:
-  - Converting to uppercase.
-  - Stripping leading and trailing whitespace.
+Create City_clean in both datasets where:
 
-All city-level grouping and merging are then performed on `City_clean`, ensuring consistent keys. This step is implemented in `scripts/clean_data.py`.
+The entries are converted to uppercase.
 
-We also standardize the conceptual definition of a “station” to match the AFDC schema: one row in the AFDC file corresponds to one station location, regardless of how many plugs or connectors it has.
+The leading and trailing spaces are stripped.
+
+Therefore, all city level group by and join actions will occur off of City_clean so that there is no inconsistency in what should be the same keys across datasets. This will be done in scripts/clean_data.py.
+
+We also create a consistent definition of a "station"; similar to the AFDC schema, if there are many plugs or connectors at one location, it will still only count as one station.
 
 ### Validity and Filtering Criteria
 
@@ -163,21 +166,23 @@ Practically, this is done by requiring `Status Code == "E"`. Similarly, we limit
 
 On the EV side, we include both BEVs and PHEVs because both require access to EV charging infrastructure, even though their charging patterns can differ. We do not restrict by model year; older EVs remain part of the adoption landscape as long as they are currently registered.
 
-### Integration Quality and Known Limitations
+Integration Completeness and Anticipated Constraints
 
-The main integration challenge was the mismatch between our original county-based plan and the available fields in the AFDC stations data:
+The only challenge in integration came from what we originally planned for and what fields were available in the AFDC stations data, specifically:
 
-- The DOL dataset includes a `County` field.
-- The AFDC export you provided does **not** include a `County` field; it offers only `City`, `ZIP`, and coordinates.
+The DOL dataset has a field for County.
 
-To avoid constructing a custom ZIP-to-county crosswalk or performing additional geocoding beyond the scope of this course project, we decided to integrate at the **city** level. We explicitly document this change in both the Status Report and this final README. The result is:
+The AFDC export you sent does not have a field for County, but rather City, ZIP, and coordinates.
 
-- **484 cities** with at least one registered EV.
-- **222 cities** with at least one EV station.
-- **204 cities** with at least one EV and at least one station (the overlapping set used for correlation analysis).
+Therefore, to avoid creating a custom ZIP-to-county crosswalk or geocoding additional data that extends beyond the scope of the course project, we chose to integrate on the city level. We acknowledge this in the Status Report as well as in this final README, so you are aware of our intentions. As a result:
 
-This city-based integration is internally consistent and reproducible based solely on the two provided CSVs.
+484 cities have at least one registered EV.
 
+222 cities have at least one EV station.
+
+204 cities have at least one EV and one station (the intersecting set used for regression analysis).
+
+This means that this integration on the city level is internally consistent and replicable based exclusively on the two provided .csvs.
 ### Suitability for Purpose
 
 For our research question—broadly, how EV adoption and charging infrastructure relate geographically—the data are fit for purpose:
@@ -200,7 +205,7 @@ At the same time, we note two limitations:
 
 Our findings are derived from the integrated city-level dataset constructed from your two CSVs.
 
-### Statewide Summary
+Statewide Summary
 
 - **239,232 registered EVs** in Washington (189,678 BEVs and 49,554 PHEVs).
 - **2,907 existing EV charging station locations** in Washington.
@@ -261,31 +266,35 @@ These patterns suggest that while the overall state infrastructure scales with a
 
 ## Future Work (500–1000 words)
 
-This project demonstrates a reproducible workflow for integrating EV registration data with EV charging station data and analyzing geographic alignment at the city level. At the same time, it points toward several concrete directions for future work:
+This project presents a repeatable process from matching EV registration data to EV charging station data to geographically finding appropriate patterns on a city basis. At the same time, it suggests some tangible avenues for next steps:
 
-### 1. Re-introducing County-Level Analysis
+Bringing back the County Comparison
 
-Our original research question emphasized **counties**, but we pivoted to cities because the AFDC export did not include a county field. With more time or additional data sources, we could:
+Our original research question focused on counties as the level of assessment, but we changed our scope to cities due to the lack of a county field in the AFDC export. Given more time or additional fields from other sources, it would be possible to:
 
-- Use a ZIP-to-county crosswalk to map each AFDC station’s ZIP code to a county.
-- Use latitude/longitude with a publicly available county boundary shapefile to assign each station to a county via spatial join.
+Incorporate a ZIP-to-county crosswalk to determine each AFDC station's ZIP code and what county it belongs to
 
-This would allow direct comparison of county-level EV registrations and county-level station availability, closely matching the original project plan.
+Incorporate latitude/longitude in combination with publicly available counties' boundary shapefiles to determine which county a station belongs to through spatial join.
 
-### 2. Incorporating Population and Demographics
+Thus, we could compare county registration EVs to county availability of stations, much like the original assessment question intended.
 
-The current analysis considers:
+Adding Population and Demographics into the Mix
 
-- EV counts (adoption).
-- Station counts (infrastructure).
+At present, we have only looked at:
 
-However, both should ideally be normalized by population or number of households. Future work could:
+Count of EVs (adoption)
 
-- Integrate population data from the U.S. Census or American Community Survey (ACS).
-- Compute EVs per 1,000 residents and stations per 10,000 residents for each city or county.
-- Stratify results by urban vs. rural status or socioeconomic indicators such as median household income.
+Count of stations (infrastructure)
 
-This would allow a more precise view of equity in EV infrastructure: are lower-income or rural communities getting proportionate access to charging?
+However, both would make more sense if normalized by population or households. Thus, future work could:
+
+Bring in population data from the U.S. Census or American Community Survey (ACS)
+
+Normalize EVs per 1,000 residents and stations per 10,000 residents in each city or county
+
+Further stratify by urban vs. rural status or socioeconomic parameters (e.g., median household income).
+
+This would give a clearer picture of equity of access to charging station infrastructure: are lower-income or rural populations receiving their fair share of resources?
 
 ### 3. Analyzing Equipment Types and Charging Speed
 
@@ -303,27 +312,31 @@ In this project, we treat each row as one “station location” regardless of e
 
 This would help identify not just where charging is present, but where **fast, high-throughput** charging is available to support long-distance travel and dense urban usage.
 
-### 4. Temporal Trends
+Temporal Trends
 
-Both datasets include the potential to analyze change over time:
+Both datasets contain the possibility of measuring change over time:
 
-- The DOL dataset contains model years and could potentially be linked to registration dates.
-- The AFDC dataset includes `Open Date` and `Updated At` fields for stations.
+The DOL data has model years and could, at best, be associated with the year of registration.
 
-Future work could build time series to answer questions such as:
+The AFDC data has fields for stations open and updated at.
 
-- Are stations being added at a rate that keeps up with new EV registrations?
-- Which cities are “closing the gap” and which are falling behind?
+A future study could build a time series to determine:
 
-### 5. Utilization and Behavioral Data
+Are stations being opened at a pace that meets the new EVs being registered?
 
-Our analysis is limited to **capacity**, not **usage**. Ideally, we would combine:
+Which cities are "catching up" and which cities are "falling behind"?
 
-- Charger session data (e.g., from utilities or networks).
-- Charging network pricing data.
-- Trip data or travel surveys.
+Utilization and Behavioral Data
 
-This could reveal whether apparent gaps in infrastructure actually translate into user hardship (e.g., long wait times, frequent queuing) and help prioritize investments where they would have the greatest impact.
+We're missing use data since our analysis only concerns capacity. Ideally, we'd have:
+
+Charger session data (harkening to utilities or networks).
+
+Charging network pricing data.
+
+Trip data/transportation surveys.
+
+This would go a long way in determining whether gaps in information suggest a lack of charging capabilities or user frustration (wait times, queuing) that can better prioritize investments in the most effective areas.
 
 ### 6. Reproducible Packaging and Containerization
 
