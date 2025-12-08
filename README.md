@@ -7,10 +7,8 @@
 ---
 
 ## Summary (500–1000 words)
-
-This project investigates the relationship between electric vehicle (EV) adoption and the availability of EV charging infrastructure across communities in Washington State. As EVs become more common, understanding whether charging access is keeping pace with vehicle adoption is important for both equity and long-term planning. If some areas accumulate EVs faster than they gain charging stations, residents may face range anxiety, congestion at chargers, or barriers to adopting an EV at all.
-
-Our original project plan focused on county-level analysis, but when we moved from a Kaggle copy of the charging dataset to the official U.S. Department of Energy Alternative Fuels Data Center (AFDC) export, we discovered that the AFDC file we used does not include a county field for each station. Instead, the AFDC data provides city, ZIP code, and latitude/longitude. To preserve data integrity and avoid building an additional ZIP-to-county crosswalk, we pivoted from a county-level analysis to a city-level analysis. We still retain the policy motivation (identifying gaps in infrastructure relative to EV adoption), but now frame our results in terms of cities across Washington.
+This project seeks to understand patterns of electric vehicle (EV) purchases compared to charging station availability as related to neighborhoods across Washington state. As the state moves towards EV adoption, this research is important for equity and future patterns since if certain areas have greater populations of EVs than charging stations, it will result in range anxiety, overpopulated charging stations, or even the inability to purchase an EV in the first place due to no charging stations in proximity.
+The original project intention was to compare data at the county level; however, once transitioning from a Kaggle copy of the Department of Energy's fueling stations to the official Alternative Fuels Data Center (AFDC) export, it was discovered that the AFDC file does not possess a county level associated with each fueling station. Instead, the AFDC data includes city, zip code and lat/long. Thus, to ensure data quality without creating an additional crosswalk from zip to county levels (unnecessarily complicated), we switched our analysis from a county to a city level. Thus, we maintain the policy intention (to find deficiencies in charging availability per EV access) but report results on a city level across Washington instead.
 
 We integrate two main datasets:
 
@@ -45,11 +43,10 @@ Across the entire state sample:
   - **49,554** are Plug-In Hybrid Electric Vehicles (PHEVs).
 - The AFDC data contains **2,907 existing EV charging station locations** in Washington State (after filtering to Status Code = “E” and Fuel Type Code = “ELEC”).
 
-At the city level, EV counts and station counts are strongly related. Restricting to cities that have at least one EV and at least one station, the **Pearson correlation coefficient** between EV count and station count is approximately **0.94**, indicating a very strong positive relationship: places with more EVs almost always have more charging locations.
+At the city level, city totals of EVs and city totals of stations are highly correlated. Excluding the cities without at least one EV or one station, the Pearson correlation coefficient of city count EV and city count station comes out to ~0.94, meaning there's a very strong positive correlation: cities with more EVs have more charging locations and vice versa.
+Nevertheless, the actual ratios of EVs to stations relative to population reveal nuanced local differences. For example, cities that are larger (Seattle, Bellevue, Redmond) and more urban in nature have high adoption rates but also many stations, showing reasonable ratios of EVs to stations. Yet certain suburban cities like Newcastle, Lake Stevens, Mercer Island, Sammamish, Mukilteo have a high number of EVs with very few stations, creating some very high ratios of EVs to stations. These cities seem to be on the radar for the "next wave" of infrastructure buildout - they have strong adoption so far, but without public stations yet, they lag behind.
+Therefore, this project overall provides an example of how access to official datasets for registered EVs can be merged with the federal dataset for EV stations for infrastructure considerations to see where public charging is approximately in line with adoption or where discrepancies are starting to grow. The major takeaways from this project are a reproducible process, a cleaned and merged dataset and final metrics that would assist with future work involving spatial analysis and population-based per-capita measures.
 
-However, the absolute EV-per-station ratios reveal important local differences. Some large, urban cities with high EV adoption (e.g., Seattle, Bellevue, Redmond) also have dense charging infrastructure, resulting in moderate EV-per-station ratios. In contrast, certain suburban cities such as **Newcastle, Lake Stevens, Mercer Island, Sammamish, and Mukilteo** have relatively high EV counts but very few stations, producing particularly high EV-per-station ratios. These locations appear to be “next-wave” infrastructure priorities: they already have strong adoption but lag behind in public station coverage.
-
-Overall, this project demonstrates how integrating official EV registration data with the federal EV infrastructure dataset can reveal where public charging is roughly keeping pace with adoption and where potential gaps are emerging. The final products include a documented and reproducible workflow, cleaned and integrated datasets, and summary statistics that can inform future work on more detailed spatial analysis and per-capita metrics using population data.
 
 ---
 
@@ -351,7 +348,7 @@ This section describes how someone else can reproduce our results from scratch.
 ### 1. Clone the Repository
 
 ```bash
-git clone <YOUR_REPO_URL>.git
-cd <YOUR_REPO_NAME>
+git clone <https://github.com/aleebe21/IS477finalgroupproject/tree/main>.git
+cd <IS477finalgroupproject>
 
 
