@@ -3,6 +3,7 @@
 ## Contributors
 - Affan Leebe
 - Om Patel
+
 The project was a joint collaboration where everyone had their role with unique and integral contributions to the deliverable. Affan Leebe was responsible for the overall vision and documentation of the project including the project overview, narrative of the profiling, quality check and analysis interpretation. In addition, Affan implemented the analysis pipeline from start to finish by generating visuals and making the whole project reproducible from the final product. Om Patel was responsible for the technical preparations of the datasets including gathering all of the data sources in their raw form, implementing the data cleaning script that served as a preprocessing utility for both EV and AFDC datasets, as well as outlining the ideas behind merging both in the cities format. The two then came together to assess the end results to confirm that the repository, output and documentation structure met the requirements for Milestone 4 by validating that the merged dataset was accurate. This allocation of tasks made it easy to create this project with high efficiency and low margin of error with regard to clarity, accuracy, and reproducibility.
 ---
 
