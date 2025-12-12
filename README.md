@@ -358,10 +358,23 @@ Future improvements could include:
 
 This section describes how someone else can reproduce our results from scratch.
 
-### 1. Clone the Repository
+To reproduce our results, download the project output files from Box and place them in the correct folder.
+
+### 1. Download the Box Folder
+Box link (required for reproduction):
+https://uofi.box.com/s/2y19c0wr1x2dym5yv9cw7sq8hzebo3y8
+
+### 2. After Downloading
+Place the files/folder inside:
+<repo_root>/
+└── data/
+    └── (place the Box files here)
+If there is no data/ folder, create one in the root directory.
+
+
+### 3 (optional). Clone the Repository
 
 ```bash
-git clone <https://github.com/aleebe21/IS477finalgroupproject/tree/main>.git
-cd <IS477finalgroupproject>
-
+git clone https://github.com/aleebe21/IS477finalgroupproject.git
+cd IS477finalgroupproject
 
