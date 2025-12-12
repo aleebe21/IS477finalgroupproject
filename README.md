@@ -353,6 +353,13 @@ Future improvements could include:
 - Hosting the final cleaned and integrated datasets and outputs in a persistent repository such as Zenodo, with a DOI.
 
 ---
+## References
+
+Washington State Department of Licensing. (2023). *Electric Vehicle Population Data* https://catalog.data.gov/dataset/electric-vehicle-population-data (Electric_Vehicle_Population_Data.csv). 
+
+U.S. Department of Energy – Alternative Fuels Data Center. (2023). *Alternative Fuel Stations* https://afdc.energy.gov/stations/states (alt_fuel_stations.csv). 
+
+Software: pandas, numpy, matplotlib
 
 ## Reproducing
 
@@ -377,4 +384,6 @@ If there is no data/ folder, create one in the root directory.
 ```bash
 git clone https://github.com/aleebe21/IS477finalgroupproject.git
 cd IS477finalgroupproject
+
+
 
